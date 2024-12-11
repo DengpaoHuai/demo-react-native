@@ -1,19 +1,32 @@
-import DemoComponent from "@/components/DemoComponent";
-import { StyleSheet, View, Text } from "react-native";
+import { Specie } from "@/types/species.types";
+import { Fragment, useEffect, useState } from "react";
+import { View, Text, Button } from "react-native";
 
 export default function HomeScreen() {
+  const [species, setSpecies] = useState<Specie[]>([]);
+
+  useEffect(() => {
+    fetch("https://swapi.dev/api/species")
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        setSpecies(data.results);
+      });
+  }, []);
+
   return (
-    <DemoComponent title="demo title" demo="demo">
-      <View>
-        <Text
-          style={{
-            fontSize: 45,
-            color: "red",
-          }}
-        >
-          demo content
-        </Text>
-      </View>
-    </DemoComponent>
+    <>
+      {species.map((specie) => {
+        return (
+          <Fragment key={specie.url}>
+            <Text>{specie.name}</Text>
+            <Text>{specie.language}</Text>
+          </Fragment>
+        );
+      })}
+      <Button title="previous"></Button>
+      <Button title="next"></Button>
+    </>
   );
 }
