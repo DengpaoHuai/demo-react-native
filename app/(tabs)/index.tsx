@@ -1,23 +1,25 @@
+import useFetch from "@/hooks/useFetch";
 import { Specie } from "@/types/species.types";
-import { Fragment, useEffect, useState } from "react";
-import { View, Text, Button } from "react-native";
+import { Fragment } from "react";
+import { ActivityIndicator, Text } from "react-native";
+
+type SpecieResponse = {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Specie[];
+};
 
 export default function HomeScreen() {
-  const [species, setSpecies] = useState<Specie[]>([]);
-
-  useEffect(() => {
-    fetch("https://swapi.dev/api/species")
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        setSpecies(data.results);
-      });
-  }, []);
+  const { data, isLoading, error } = useFetch<SpecieResponse>(
+    "https://swapi.dev/api/species/"
+  );
 
   return (
     <>
-      {species.map((specie) => {
+      {isLoading && <ActivityIndicator size="large"></ActivityIndicator>}
+      {error && <Text>{error}</Text>}
+      {data?.results.map((specie) => {
         return (
           <Fragment key={specie.url}>
             <Text>{specie.name}</Text>
@@ -25,8 +27,6 @@ export default function HomeScreen() {
           </Fragment>
         );
       })}
-      <Button title="previous"></Button>
-      <Button title="next"></Button>
     </>
   );
 }
