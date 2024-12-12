@@ -12,7 +12,7 @@ const DemoScreen = () => {
       <Button
         title="redirect"
         onPress={() => {
-          router.navigate("/settings/update-password");
+          router.navigate("/(tabs)");
           // navigation.navigate("/settings/update-password");
         }}
       ></Button>
