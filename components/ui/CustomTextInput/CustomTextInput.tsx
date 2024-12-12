@@ -1,5 +1,6 @@
-import { Control, Controller, FieldValues } from "react-hook-form";
+import { Control, Controller } from "react-hook-form";
 import { TextInput } from "react-native";
+import styles from "./CustomTextInputStyle";
 
 type CustomTextInputProps = {
   control: Control<any>;
@@ -21,6 +22,7 @@ const CustomTextInput = ({
           onBlur={onBlur}
           onChangeText={onChange}
           value={value}
+          style={styles.input}
         />
       )}
       name={name}

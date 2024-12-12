@@ -1,11 +1,20 @@
-import CustomTextInput from "@/components/ui/CustomTextInput";
+import CustomTextInput from "@/components/ui/CustomTextInput/CustomTextInput";
 import { useForm } from "react-hook-form";
-import { Button, Text, View } from "react-native";
+import {
+  Button,
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Dimensions,
+} from "react-native";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Movie, MovieSchema } from "@/schemas/movie-schema";
 import { createMovie } from "@/service/movie.service";
 import { router } from "expo-router";
 import { useState } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 /*
 Scénario par défault de validation
@@ -24,7 +33,7 @@ const CreateMovie = () => {
     resolver: zodResolver(MovieSchema),
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const data = useSafeAreaInsets();
   const onSubmit = (data: Movie) => {
     setIsSubmitting(true);
     createMovie(data)
@@ -41,33 +50,79 @@ const CreateMovie = () => {
   };
 
   return (
-    <View>
-      <Text>Créer un film</Text>
-      <CustomTextInput
-        control={control}
-        name="title"
-        placeholder="Titre"
-      ></CustomTextInput>
-      {errors.title && <Text>{errors.title.message}</Text>}
-      <CustomTextInput
-        control={control}
-        name="director"
-        placeholder="Réalisateur"
-      ></CustomTextInput>
-      {errors.director && <Text>{errors.director.message}</Text>}
-      <CustomTextInput
-        control={control}
-        name="genre"
-        placeholder="Genre"
-      ></CustomTextInput>
-      {errors.genre && <Text>{errors.genre.message}</Text>}
-      <Button
-        disabled={isSubmitting}
-        onPress={handleSubmit(onSubmit)}
-        title="Créer"
-      ></Button>
-    </View>
+    <ScrollView
+      style={{
+        flex: 1,
+      }}
+    >
+      <View
+        style={[
+          styles.container,
+          {
+            minHeight: "100%",
+          },
+        ]}
+      >
+        <Text>Créer un film</Text>
+        <View style={styles.inputContainer}>
+          <CustomTextInput
+            control={control}
+            name="title"
+            placeholder="Titre"
+          ></CustomTextInput>
+          {errors.title && <Text>{errors.title.message}</Text>}
+        </View>
+        <View style={styles.inputContainer}>
+          <CustomTextInput
+            control={control}
+            name="director"
+            placeholder="Réalisateur"
+          ></CustomTextInput>
+          {errors.director && <Text>{errors.director.message}</Text>}
+        </View>
+        <View style={styles.inputContainer}>
+          <CustomTextInput
+            control={control}
+            name="genre"
+            placeholder="Genre"
+          ></CustomTextInput>
+          {errors.genre && <Text>{errors.genre.message}</Text>}
+        </View>
+
+        <TouchableOpacity
+          disabled={isSubmitting}
+          onPress={handleSubmit(onSubmit)}
+        >
+          <View style={styles.button}>
+            <Text style={styles.buttonText}>Créer un film</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 };
 
 export default CreateMovie;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  inputContainer: {
+    marginVertical: 10,
+    width: "100%",
+  },
+  button: {
+    marginVertical: 10,
+    padding: 10,
+    backgroundColor: "blue",
+    borderRadius: 10,
+    width: "50%",
+  },
+  buttonText: {
+    color: "white",
+    textAlign: "center",
+  },
+});
