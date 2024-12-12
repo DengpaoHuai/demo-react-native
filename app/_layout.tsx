@@ -46,7 +46,16 @@ export default function RootLayout() {
                     backgroundColor: "#000",
                   }}
                 >
-                  <Text>{props.route.name}</Text>
+                  <Text
+                    style={{
+                      color: "#fff",
+                      fontSize: 20,
+                      textAlign: "center",
+                      padding: 20,
+                    }}
+                  >
+                    {props.route.name}
+                  </Text>
                 </View>
               );
             },
