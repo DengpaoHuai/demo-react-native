@@ -7,7 +7,9 @@ export default function Layout() {
   return (
     <Stack>
       <Stack.Screen name="index" />
-      <Stack.Screen name="update-password" />
+      <Stack.Screen name="update" />
+      <Stack.Screen name="update-password/toto" />
+      <Stack.Screen name="update-password/demo" />
     </Stack>
   );
 }
