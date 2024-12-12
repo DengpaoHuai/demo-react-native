@@ -1,28 +1,12 @@
 import CustomTextInput from "@/components/ui/CustomTextInput";
-import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { Button, Text, TextInput, View } from "react-native";
-import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { Button, Text, View } from "react-native";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Movie, MovieSchema } from "@/schemas/movie-schema";
+import { createMovie } from "@/service/movie.service";
+import { router } from "expo-router";
+import { useState } from "react";
 
-const MovieSchema = z.object({
-  title: z
-    .string()
-    .min(3, "Le titre doit contenir au moins 3 caractères")
-    .max(10, "Le titre doit contenir au plus 10 caractères"),
-  director: z
-    .string()
-    .min(3, "Le réalisateur doit contenir au moins 3 caractères"),
-  genre: z.string().min(3),
-});
-
-/*MovieSchema.parse({
-  title: "test",
-  director: "test",
-  genre: "test",
-});*/
-
-type Movie = z.infer<typeof MovieSchema>;
 /*
 Scénario par défault de validation
 Soumission sans validation PUI, une fois la première soumission réalisée, les champs sont validés à chaque modification
@@ -39,9 +23,21 @@ const CreateMovie = () => {
   } = useForm<Movie>({
     resolver: zodResolver(MovieSchema),
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onSubmit = (data: Movie) => {
-    console.log(data);
+    setIsSubmitting(true);
+    createMovie(data)
+      .then((response) => {
+        console.log(response);
+        router.back();
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   };
 
   return (
@@ -65,7 +61,11 @@ const CreateMovie = () => {
         placeholder="Genre"
       ></CustomTextInput>
       {errors.genre && <Text>{errors.genre.message}</Text>}
-      <Button onPress={handleSubmit(onSubmit)} title="Créer"></Button>
+      <Button
+        disabled={isSubmitting}
+        onPress={handleSubmit(onSubmit)}
+        title="Créer"
+      ></Button>
     </View>
   );
 };
