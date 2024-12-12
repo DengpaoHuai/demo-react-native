@@ -6,7 +6,7 @@ const MoviesList = () => {
     <View>
       <Text>List de films</Text>
 
-      <Link href="/(tabs)/(movies)/create">
+      <Link href="/(tabs)/movies/create">
         <Text>Créer un film</Text>
       </Link>
     </View>
