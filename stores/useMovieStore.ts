@@ -2,6 +2,16 @@ import { Movie } from "@/schemas/movie-schema";
 import { getMovies } from "@/service/movie.service";
 import { useEffect, useState } from "react";
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+/*
+AsyncStorage.getItem('key')
+
+AsyncStorage.setItem('key', JSON.stringify({
+    name : 'John Doe'
+}))
+*/
 
 type MovieStore = {
   movies: Movie[];
@@ -9,11 +19,20 @@ type MovieStore = {
   setMovie: (movie: Movie) => void;
 };
 
-export const useMovieStore = create<MovieStore>((set) => ({
-  movies: [],
-  setMovies: (movies) => set({ movies }),
-  setMovie: (movie) => set((state) => ({ movies: [...state.movies, movie] })),
-}));
+export const useMovieStore = create()(
+  persist(
+    (set) => ({
+      movies: [],
+      setMovies: (movies) => set({ movies }),
+      setMovie: (movie) =>
+        set((state) => ({ movies: [...state.movies, movie] })),
+    }),
+    {
+      name: "food-storage",
+      storage: createJSONStorage(() => AsyncStorage),
+    }
+  )
+);
 
 const useMovies = () => {
   const { movies, setMovies, ...rest } = useMovieStore();
