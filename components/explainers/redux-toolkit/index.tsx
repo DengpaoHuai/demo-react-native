@@ -1,10 +1,9 @@
-import { MovieContext } from "@/contexts/MovieContextProvider";
 import { Movie } from "@/schemas/movie-schema";
 import { deleteMovie } from "@/service/movie.service";
 import { getMovies } from "@/store/async-thunks/movie-thunk";
 import { State, useAppDispatch } from "@/store/store";
 import { Link } from "expo-router";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import {
   Text,
   View,
@@ -15,13 +14,7 @@ import {
 } from "react-native";
 import { useSelector } from "react-redux";
 
-const MovieCard = ({
-  movie,
-  deleteMovieById,
-}: {
-  movie: Movie;
-  deleteMovieById: (id: string) => void;
-}) => {
+const MovieCard = ({ movie }: { movie: Movie }) => {
   return (
     <View style={styles.cardContainer}>
       <Text
@@ -39,7 +32,7 @@ const MovieCard = ({
         <Button
           title="Supprimer"
           onPress={() => {
-            deleteMovieById(movie._id);
+            deleteMovie(movie._id);
           }}
         ></Button>
       </View>
@@ -48,10 +41,16 @@ const MovieCard = ({
 };
 
 const MoviesList = () => {
-  const { movies, deleteMovieById } = useContext(MovieContext);
+  const { movies, isLoading } = useSelector((state: State) => state.movie);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getMovies());
+  }, []);
 
   return (
     <View>
+      {isLoading && <ActivityIndicator></ActivityIndicator>}
       <Text>List de films</Text>
 
       <Link href="/(tabs)/movies/create">
@@ -60,9 +59,7 @@ const MoviesList = () => {
       <FlatList
         data={movies}
         contentContainerStyle={{ paddingBottom: 50 }}
-        renderItem={({ item }) => (
-          <MovieCard movie={item} deleteMovieById={deleteMovieById}></MovieCard>
-        )}
+        renderItem={({ item }) => <MovieCard movie={item}></MovieCard>}
         keyExtractor={(item) => item._id}
       ></FlatList>
     </View>

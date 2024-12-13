@@ -1,6 +1,6 @@
 import { Movie } from "@/schemas/movie-schema";
 import { createSlice } from "@reduxjs/toolkit";
-import { getMovies } from "../async-thunks/movie-thunk";
+import { getMovies, updateMovie } from "../async-thunks/movie-thunk";
 
 type InitialMovieState = {
   movies: Movie[];
@@ -40,6 +40,20 @@ const movieSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(getMovies.rejected, (state, action) => {
+        state.error = action.error.message!;
+        state.isLoading = false;
+      })
+      .addCase(updateMovie.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateMovie.fulfilled, (state, action) => {
+        const index = state.movies.findIndex(
+          (movie) => movie._id === action.payload._id
+        );
+        state.movies[index] = action.payload.movie;
+        state.isLoading = false;
+      })
+      .addCase(updateMovie.rejected, (state, action) => {
         state.error = action.error.message!;
         state.isLoading = false;
       });
