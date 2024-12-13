@@ -1,6 +1,6 @@
 import { Movie } from "@/schemas/movie-schema";
 import { getMovies } from "@/service/movie.service";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { create } from "zustand";
 
 type MovieStore = {
@@ -17,16 +17,19 @@ export const useMovieStore = create<MovieStore>((set) => ({
 
 const useMovies = () => {
   const { movies, setMovies, ...rest } = useMovieStore();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (movies.length === 0) {
+      setIsLoading(true);
       getMovies().then((response) => {
         setMovies(response);
+        setIsLoading(false);
       });
     }
   }, []);
 
-  return { movies, ...rest };
+  return { movies, isLoading, ...rest };
 };
 
 export default useMovies;

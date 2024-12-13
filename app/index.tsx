@@ -25,6 +25,8 @@ const DemoScreen = () => {
           // navigation.navigate("/settings/update-password");
         }}
       ></Button>
+
+      <Link href="/camera">camera</Link>
     </View>
   );
 };

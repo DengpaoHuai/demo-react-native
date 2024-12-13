@@ -16,7 +16,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
 import MovieContextProvider from "@/contexts/MovieContextProvider";
 import CustomModalProvider from "@/components/CustomModal";
-
+import { OneSignal } from "react-native-onesignal";
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
@@ -29,6 +29,15 @@ export default function RootLayout() {
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
+
+  useEffect(() => {
+    console.log(OneSignal);
+    OneSignal.Notifications.canRequestPermission().then((response) => {
+      if (response) {
+        console.log("canRequestPermission");
+      }
+    });
+  }, []);
 
   useEffect(() => {
     if (loaded) {
