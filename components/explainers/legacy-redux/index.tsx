@@ -1,18 +1,18 @@
 import { Movie } from "@/schemas/movie-schema";
-import { deleteMovie } from "@/service/movie.service";
-import { getMovies } from "@/store/async-thunks/movie-thunk";
-import { State, useAppDispatch } from "@/store/store";
-import { Link } from "expo-router";
-import { useEffect } from "react";
+import { deleteMovie, getMovies } from "@/service/movie.service";
+import { setAllMovies } from "@/store/actions/movie-action";
+import { State } from "@/store/store";
+import { Link, router, useNavigation } from "expo-router";
+import { useEffect, useState } from "react";
 import {
   Text,
   View,
   StyleSheet,
+  ScrollView,
   Button,
   FlatList,
-  ActivityIndicator,
 } from "react-native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const MovieCard = ({ movie }: { movie: Movie }) => {
   return (
@@ -41,16 +41,30 @@ const MovieCard = ({ movie }: { movie: Movie }) => {
 };
 
 const MoviesList = () => {
-  const { movies, isLoading } = useSelector((state: State) => state.movie);
-  const dispatch = useAppDispatch();
+  // const navigation = useNavigation();
+  const movies = useSelector((state: State) => state.movies);
+  const dispatch = useDispatch();
+
+  const getData = () => {
+    getMovies().then((movies) => {
+      dispatch(setAllMovies(movies));
+    });
+  };
 
   useEffect(() => {
-    dispatch(getMovies());
+    getData();
   }, []);
+
+  /*useEffect(() => {
+    navigation.addListener("focus", getData);
+
+    return () => {
+      navigation.removeListener("focus", getData);
+    };
+  }, []);*/
 
   return (
     <View>
-      {isLoading && <ActivityIndicator></ActivityIndicator>}
       <Text>List de films</Text>
 
       <Link href="/(tabs)/movies/create">

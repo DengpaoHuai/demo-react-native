@@ -1,8 +1,15 @@
-import { createStore } from "redux";
-import movieReducer from "./reducers/movie-reducer";
+import { configureStore } from "@reduxjs/toolkit";
+import movieReducer from "./slices/movie-reducer";
+import { useDispatch } from "react-redux";
 
-const store = createStore(movieReducer);
+const store = configureStore({
+  reducer: {
+    movie: movieReducer,
+  },
+});
 
 export default store;
 
 export type State = ReturnType<typeof store.getState>;
+
+export const useAppDispatch = () => useDispatch<typeof store.dispatch>();

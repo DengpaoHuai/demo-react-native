@@ -16,7 +16,7 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
-import { setMovie } from "@/store/slices/movie-reducer";
+import { setMovie } from "@/store/actions/movie-action";
 
 /*
 Scénario par défault de validation
