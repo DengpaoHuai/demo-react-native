@@ -17,4 +17,4 @@ export const MovieSchema = z.object({
     genre: "test",
   });*/
 
-export type Movie = z.infer<typeof MovieSchema>;
+export type Movie = z.infer<typeof MovieSchema> & { _id: string };

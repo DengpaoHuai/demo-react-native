@@ -13,6 +13,8 @@ import "react-native-reanimated";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Provider } from "react-redux";
+import store from "@/store/store";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -38,40 +40,42 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={DefaultTheme}>
-      <Stack>
-        <Stack.Screen
-          name="index"
-          options={{
-            header: (props) => {
-              return (
-                <View
-                  style={{
-                    height: 100,
-                    backgroundColor: "#000",
-                  }}
-                >
-                  <Text
+    <Provider store={store}>
+      <ThemeProvider value={DefaultTheme}>
+        <Stack>
+          <Stack.Screen
+            name="index"
+            options={{
+              header: (props) => {
+                return (
+                  <View
                     style={{
-                      color: "#fff",
-                      fontSize: 20,
-                      textAlign: "center",
-                      padding: 20,
+                      height: 100,
+                      backgroundColor: "#000",
                     }}
                   >
-                    {props.route.name}
-                  </Text>
-                </View>
-              );
-            },
-          }}
-        />
-        <Stack.Screen name="demo" />
-        <Stack.Screen name="settings" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="dark" />
-    </ThemeProvider>
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontSize: 20,
+                        textAlign: "center",
+                        padding: 20,
+                      }}
+                    >
+                      {props.route.name}
+                    </Text>
+                  </View>
+                );
+              },
+            }}
+          />
+          <Stack.Screen name="demo" />
+          <Stack.Screen name="settings" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+        <StatusBar style="dark" />
+      </ThemeProvider>
+    </Provider>
   );
 }

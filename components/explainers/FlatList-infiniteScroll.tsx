@@ -1,7 +1,5 @@
 import { Movie } from "@/schemas/movie-schema";
-import { deleteMovie, getMovies } from "@/service/movie.service";
-import { setAllMovies } from "@/store/actions/movie-action";
-import { State } from "@/store/store";
+import { getMovies } from "@/service/movie.service";
 import { Link, router, useNavigation } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -12,7 +10,6 @@ import {
   Button,
   FlatList,
 } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
 
 const MovieCard = ({ movie }: { movie: Movie }) => {
   return (
@@ -29,39 +26,28 @@ const MovieCard = ({ movie }: { movie: Movie }) => {
       <Text>{movie.genre}</Text>
       <View style={styles.buttonContainer}>
         <Button title="Modifier" onPress={() => {}}></Button>
-        <Button
-          title="Supprimer"
-          onPress={() => {
-            deleteMovie(movie._id);
-          }}
-        ></Button>
+        <Button title="Supprimer" onPress={() => {}}></Button>
       </View>
     </View>
   );
 };
 
 const MoviesList = () => {
-  // const navigation = useNavigation();
-  const movies = useSelector((state: State) => state.movies);
-  const dispatch = useDispatch();
-
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const navigation = useNavigation();
   const getData = () => {
     getMovies().then((movies) => {
-      // dispatch(setAllMovies(movies));
+      setMovies(movies);
     });
   };
 
   useEffect(() => {
-    getData();
-  }, []);
-
-  /*useEffect(() => {
     navigation.addListener("focus", getData);
 
     return () => {
       navigation.removeListener("focus", getData);
     };
-  }, []);*/
+  }, []);
 
   return (
     <View>
@@ -72,6 +58,14 @@ const MoviesList = () => {
       </Link>
       <FlatList
         data={movies}
+        onEndReachedThreshold={0.5}
+        onEndReached={() => {
+          console.log("end reached");
+          setMovies([
+            ...movies,
+            ...movies.map((movie) => ({ ...movie, _id: `${movie._id}-1` })),
+          ]);
+        }}
         contentContainerStyle={{ paddingBottom: 50 }}
         renderItem={({ item }) => <MovieCard movie={item}></MovieCard>}
         keyExtractor={(item) => item._id}

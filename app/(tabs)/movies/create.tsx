@@ -15,6 +15,8 @@ import { createMovie } from "@/service/movie.service";
 import { router } from "expo-router";
 import { useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useDispatch } from "react-redux";
+import { setMovie } from "@/store/actions/movie-action";
 
 /*
 Scénario par défault de validation
@@ -29,16 +31,19 @@ const CreateMovie = () => {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<Movie>({
+  } = useForm<Omit<Movie, "_id">>({
     resolver: zodResolver(MovieSchema),
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const data = useSafeAreaInsets();
-  const onSubmit = (data: Movie) => {
+  const dispatch = useDispatch();
+
+  const onSubmit = (data: Omit<Movie, "_id">) => {
     setIsSubmitting(true);
     createMovie(data)
       .then((response) => {
         console.log(response);
+        dispatch(setMovie(response));
         router.back();
       })
       .catch((error) => {
