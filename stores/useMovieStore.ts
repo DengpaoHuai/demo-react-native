@@ -19,9 +19,11 @@ const useMovies = () => {
   const { movies, setMovies, ...rest } = useMovieStore();
 
   useEffect(() => {
-    getMovies().then((response) => {
-      setMovies(response);
-    });
+    if (movies.length === 0) {
+      getMovies().then((response) => {
+        setMovies(response);
+      });
+    }
   }, []);
 
   return { movies, ...rest };
