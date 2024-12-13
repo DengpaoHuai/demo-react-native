@@ -14,7 +14,6 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
-import store from "@/store/store";
 import MovieContextProvider from "@/contexts/MovieContextProvider";
 import CustomModalProvider from "@/components/CustomModal";
 
@@ -42,46 +41,44 @@ export default function RootLayout() {
   }
 
   return (
-    <Provider store={store}>
-      <CustomModalProvider>
-        <ThemeProvider value={DefaultTheme}>
-          <MovieContextProvider>
-            <Stack>
-              <Stack.Screen
-                name="index"
-                options={{
-                  header: (props) => {
-                    return (
-                      <View
+    <CustomModalProvider>
+      <ThemeProvider value={DefaultTheme}>
+        <MovieContextProvider>
+          <Stack>
+            <Stack.Screen
+              name="index"
+              options={{
+                header: (props) => {
+                  return (
+                    <View
+                      style={{
+                        height: 100,
+                        backgroundColor: "#000",
+                      }}
+                    >
+                      <Text
                         style={{
-                          height: 100,
-                          backgroundColor: "#000",
+                          color: "#fff",
+                          fontSize: 20,
+                          textAlign: "center",
+                          padding: 20,
                         }}
                       >
-                        <Text
-                          style={{
-                            color: "#fff",
-                            fontSize: 20,
-                            textAlign: "center",
-                            padding: 20,
-                          }}
-                        >
-                          {props.route.name}
-                        </Text>
-                      </View>
-                    );
-                  },
-                }}
-              />
-              <Stack.Screen name="demo" />
-              <Stack.Screen name="settings" options={{ headerShown: false }} />
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="+not-found" />
-            </Stack>
-            <StatusBar style="dark" />
-          </MovieContextProvider>
-        </ThemeProvider>
-      </CustomModalProvider>
-    </Provider>
+                        {props.route.name}
+                      </Text>
+                    </View>
+                  );
+                },
+              }}
+            />
+            <Stack.Screen name="demo" />
+            <Stack.Screen name="settings" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+          <StatusBar style="dark" />
+        </MovieContextProvider>
+      </ThemeProvider>
+    </CustomModalProvider>
   );
 }

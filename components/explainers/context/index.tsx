@@ -1,12 +1,27 @@
 import { MovieContext } from "@/contexts/MovieContextProvider";
 import { Movie } from "@/schemas/movie-schema";
-import { getMovies } from "@/service/movie.service";
-import useMovies from "@/stores/useMovieStore";
+import { deleteMovie } from "@/service/movie.service";
+import { getMovies } from "@/store/async-thunks/movie-thunk";
+import { State, useAppDispatch } from "@/store/store";
 import { Link } from "expo-router";
 import { useContext, useEffect } from "react";
-import { Text, View, StyleSheet, Button, FlatList } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Button,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
+import { useSelector } from "react-redux";
 
-const MovieCard = ({ movie }: { movie: Movie }) => {
+const MovieCard = ({
+  movie,
+  deleteMovieById,
+}: {
+  movie: Movie;
+  deleteMovieById: (id: string) => void;
+}) => {
   return (
     <View style={styles.cardContainer}>
       <Text
@@ -21,14 +36,19 @@ const MovieCard = ({ movie }: { movie: Movie }) => {
       <Text>{movie.genre}</Text>
       <View style={styles.buttonContainer}>
         <Button title="Modifier" onPress={() => {}}></Button>
-        <Button title="Supprimer"></Button>
+        <Button
+          title="Supprimer"
+          onPress={() => {
+            deleteMovieById(movie._id);
+          }}
+        ></Button>
       </View>
     </View>
   );
 };
 
 const MoviesList = () => {
-  const { movies } = useMovies();
+  const { movies, deleteMovieById } = useContext(MovieContext);
 
   return (
     <View>
@@ -40,7 +60,9 @@ const MoviesList = () => {
       <FlatList
         data={movies}
         contentContainerStyle={{ paddingBottom: 50 }}
-        renderItem={({ item }) => <MovieCard movie={item}></MovieCard>}
+        renderItem={({ item }) => (
+          <MovieCard movie={item} deleteMovieById={deleteMovieById}></MovieCard>
+        )}
         keyExtractor={(item) => item._id}
       ></FlatList>
     </View>
